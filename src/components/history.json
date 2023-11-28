@@ -1,0 +1,36 @@
+[
+  {
+    "year": 2020,
+    "people": 23598776,
+    "votePeople": 19311105,
+    "total": 14464571,
+    "validTickets": 14300940,
+    "invalidTickets": 163631,
+
+    "validPercentage": "74.90",
+    "invalidPercentage": "25.10",
+    "candidates": [
+      {
+        "id": 1,
+        "party": "親民黨",
+        "validTickets": 608590,
+        "validPercentage": "4.26",
+        "name": "宋楚瑜/余湘"
+      },
+      {
+        "id": 2,
+        "party": "中國國民黨",
+        "validTickets": 5522119,
+        "validPercentage": "38.61",
+        "name": "韓國瑜/張善政"
+      },
+      {
+        "id": 3,
+        "party": "民主進步黨",
+        "validTickets": 8170231,
+        "validPercentage": "57.13",
+        "name": "蔡英文/賴清德"
+      }
+    ]
+  }
+]
