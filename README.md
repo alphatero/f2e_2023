@@ -1,5 +1,7 @@
 # 今晚來開票
 
+![封面](https://github.com/alphatero/f2e_2023/blob/88cc3a4d6acafb0fbdb0be05ec0886012186eb20/TodayShowVote.png)
+
 ## 專案介紹
 
 這是參加 2023 年 The F2E 比賽的專案
