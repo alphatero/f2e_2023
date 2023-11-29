@@ -4,7 +4,6 @@ import history from './history.json';
 
 import { Tabs } from './Tabs';
 import { Section } from './Section';
-import { Result } from './Result';
 import { cn } from '@/utils/cn';
 import { useStore } from './stores';
 import { ElectedIcon } from '@/assets/icons';
@@ -26,9 +25,7 @@ type Candidate = {
 export const History = () => {
   const { data } = useParty();
   const { selectedSectionOne, setSelectedSectionOne, open } = useStore();
-  console.log(data);
   if (!data) return null;
-  console.log(history);
   // 找得票數最多的
   const elected = history[0].candidates.reduce(
     (prev: Candidate, current: Candidate) => {
@@ -36,7 +33,10 @@ export const History = () => {
     },
   );
   return (
-    <Section title="歷屆得票分析" className={cn(open ? 'block' : 'hidden')}>
+    <Section
+      title="歷屆得票分析"
+      className={cn(open ? 'block' : 'hidden', 'md:block')}
+    >
       <ul className="flex gap-x-11 text-2xl overflow-x-scroll overflow-y-hidden scroll-auto">
         {data.ticket?.map((item: any) => {
           return (

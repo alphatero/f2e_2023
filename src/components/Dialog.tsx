@@ -30,7 +30,6 @@ function MyModal() {
   }
 
   const handleTabDistrict = () => {
-    console.log('district', country);
     if (!country) {
       setCountry(districts[0]?.name);
     }
@@ -52,12 +51,10 @@ function MyModal() {
   useEffect(() => {
     fetch('/districts.json').then((response) => {
       if (response.status !== 200) {
-        // console.log(`There was a problem: ${response.status}`);
         return;
       }
 
       response.json().then((data) => {
-        console.log(data);
         setDistricts(data);
       });
     });

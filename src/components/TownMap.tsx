@@ -28,13 +28,10 @@ export const TownMap = () => {
   useEffect(() => {
     fetch('/towns.json').then((response) => {
       if (response.status !== 200) {
-        console.log(`There was a problem: ${response.status}`);
         return;
       }
 
       response.json().then((worlddata) => {
-        console.log(worlddata);
-        // const geo = topojson.feature(worlddata, worlddata?.objects["COUNTY_MOI_1090820"]) as any
         const geo = topojson.feature(
           worlddata,
           worlddata?.objects['towns'],
