@@ -7,9 +7,11 @@ import { useStore } from './stores';
 import { useMap } from './hooks/useMap';
 import { cn } from '@/utils/cn';
 
-export const TotalMap = (props: any) => {
+export const TotalMap = () => {
   const { map } = useMap();
   const data = map;
+
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 767.98;
 
   const { setCurrentCountry } = useStore();
   const tooltip = useRef(null);
@@ -20,6 +22,22 @@ export const TotalMap = (props: any) => {
     width: window.innerWidth,
     height: window.innerHeight,
   });
+
+  useEffect(() => {
+    if (isMobile) {
+      windowSize.current.width = window.innerWidth;
+      windowSize.current.height = window.innerHeight;
+    }
+
+    const handleResize = () => {
+      windowSize.current.width = window.innerWidth;
+      windowSize.current.height = window.innerHeight;
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, [isMobile]);
 
   useEffect(() => {
     fetch('/geo.json').then((response) => {
@@ -46,12 +64,12 @@ export const TotalMap = (props: any) => {
     });
   }, []);
 
-  const projection = d3.geoMercator().center([121.2, 25]).scale(11000);
-  // if (windowSize.current.width < 640) {
-  //   projection.scale(11000);
-  // } else {
-  //   projection.scale((11000 * windowSize.current.height) / 1100);
-  // }
+  let projection = d3.geoMercator().center([121.2, 25]).scale(11000);
+  if (windowSize.current.width < 640) {
+    projection.scale(6000);
+  } else {
+    projection.scale((11000 * windowSize.current.height) / 1100);
+  }
 
   if (!data) {
     return null;
@@ -74,8 +92,6 @@ export const TotalMap = (props: any) => {
 
   // 當滑鼠移動到地圖上時，顯示該縣市的名稱 運用 style centroid
   const mouseover = function (event: any, d: any) {
-    console.log(d);
-    console.log(event.pageX, event.pageY);
     const tooltipDiv = tooltip.current;
     if (tooltipDiv) {
       d3.select(tooltipDiv).transition().duration(200).style('opacity', 0.9);
@@ -107,9 +123,13 @@ export const TotalMap = (props: any) => {
       <svg
         viewBox="0 0 637 900"
         height={
-          windowSize.current.width < 640 ? 900 : windowSize.current.height - 80
+          windowSize.current.width < 640 ? 600 : windowSize.current.height - 80
         }
-        width={windowSize.current.width / 2.5}
+        width={
+          windowSize.current.width < 640
+            ? windowSize.current.width
+            : windowSize.current.width / 2.5
+        }
       >
         <g className="countries">
           {geographies.map((d: any, i) => (

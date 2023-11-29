@@ -8,8 +8,10 @@ import SecondParty from '@/assets/second_party.svg';
 import ThirdParty from '@/assets/third_party.svg';
 import Image from 'next/image';
 import bn from 'bignumber.js';
-import { getTotals } from './getData';
+// import { getTotals } from './getData';
 import { Progress } from './Progress';
+import { useTotal } from '@/services/queries/hooks/total';
+import { getTotal } from '@/services/queries/api/total';
 
 type Candidates = {
   id: number;
@@ -20,14 +22,16 @@ type Candidates = {
 };
 
 export const DataSets = async () => {
+  // const { data } = useTotal();
+  const data = await getTotal();
+  if (!data) return null;
   const {
     candidates,
     validTickets,
     invalidTickets,
     validPercentage,
     invalidPercentage,
-    valid,
-  } = await getTotals();
+  } = data;
 
   return (
     <div className="relative md:my-10 overflow-y-scroll bg-white rounded-3xl px-6 md:px-12 py-4 mx-3 md:mx-0 h-full">
