@@ -2,12 +2,19 @@
 import * as d3 from 'd3';
 
 import { geoPath } from 'd3-geo';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, use } from 'react';
 import * as topojson from 'topojson-client';
 import { useStore } from './stores';
 import { data } from '@/data/center';
 import { BackIcon } from '@/assets/icons';
 import { useSize } from 'ahooks';
+import { getDistricts } from '@/services/queries/api/districts';
+
+type Districts = {
+  winner: number;
+  zip: string;
+  name: string;
+};
 
 export const TownMap = () => {
   const width = 600;
@@ -16,6 +23,16 @@ export const TownMap = () => {
   const divRef = useRef(null);
   const size = useSize(divRef);
   const { setCountry, currentCountry, setCurrentCountry } = useStore();
+  const [districts, setDistricts] = useState<Districts[]>();
+
+  useEffect(() => {
+    getDistricts(currentCountry).then((res) => {
+      console.log(res[0]);
+      if (!res[0].districts) return;
+
+      setDistricts(res[0].districts);
+    });
+  }, []);
 
   const [geographies, setGeographies] = useState([]);
 
@@ -75,14 +92,33 @@ export const TownMap = () => {
   };
 
   const country = data.find((d) => d.country === currentCountry) ?? data[0];
-  const projection = d3
+  let projection = d3
     .geoMercator()
     .center(country.center as [number, number])
-    .scale(size && size?.width < 600 ? country.scale * 0.7 : country.scale)
-    .translate([width / 2, height / 4]);
+    .scale(size && size?.width < 600 ? country.scale * 0.7 : country.scale);
+
+  if (size && size?.width < 400) {
+    projection.center([123.4, 23]).scale(5000);
+  }
+
+  const checkFillColor = (d: any) => {
+    const townName = d.properties.TOWNNAME;
+
+    const town = districts?.find((d: any) => d.name === townName) ?? null;
+    if (town) {
+      if (town.winner === 1) {
+        return '#FBBF24';
+      } else if (town.winner === 2) {
+        return '#A78BFA';
+      } else {
+        return '#34D399';
+      }
+    }
+    return 'gray';
+  };
 
   return (
-    <div ref={divRef} className="relative">
+    <div ref={divRef}>
       <button
         className="text-cyan-600 bg-white w-10 h-10 flex justify-center items-center rounded-full"
         onClick={() => setCurrentCountry('')}
@@ -93,14 +129,14 @@ export const TownMap = () => {
         className="px-4 py-2 bg-white hidden absolute text-slate-700 z-50 rounded-full"
         ref={tooltip}
       ></div>
-      <svg width={size?.width} height={height}>
+      <svg width={size?.width || 0} height={height || 0}>
         <g className="countries">
           {geographies.map((d: any, i) => (
             <path
               key={`path-${i}`}
               d={geoPath().projection(projection)(d) ?? ''}
               className="country"
-              fill={randomColor()}
+              fill={checkFillColor(d)}
               stroke="#FFFFFF"
               strokeWidth={0.5}
               onMouseOver={(event) => mouseover(event, d)}

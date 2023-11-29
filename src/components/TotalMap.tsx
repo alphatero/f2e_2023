@@ -105,8 +105,8 @@ export const TotalMap = () => {
       <svg
         // viewBox="0 0 637 900"
         ref={svgRef}
-        height={Number(size?.width) * 1.2}
-        width={Number(size?.width)}
+        height={Number(size?.width) * 1.2 || 0}
+        width={Number(size?.width) || 0}
       >
         <g className="countries">
           {geographies.map((d: any, i) => (
