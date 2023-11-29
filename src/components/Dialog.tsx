@@ -3,10 +3,9 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useEffect, useState } from 'react';
 import { useStore } from './stores';
-import { countries } from './countries';
+import { countries } from '../data/countries';
 import { CloseIcon } from '@/assets/icons';
 import { cn } from '@/utils/cn';
-// import districts from './districts.json';
 
 type Districts = {
   districts: {
