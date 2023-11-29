@@ -19,7 +19,7 @@ export const Tabs = (props: Props) => {
             className={cn(
               selected === item
                 ? 'first:rounded-l-full last:rounded-r-full bg-cyan-600 focus:outline-none text-white text-xl px-4 py-2'
-                : 'bg-white text-slate-700 text-xl px-4 py-2',
+                : 'bg-white text-slate-700 px-4 py-2',
               'shadow-md first:rounded-l-full last:rounded-r-full text-xl px-4 py-2',
             )}
             onClick={() => setSelected(item)}

@@ -1,8 +1,6 @@
 'use client';
 
 import { useStore } from './stores';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import { Doughnut } from 'react-chartjs-2';
 import { cn } from '@/utils/cn';
 import { Section } from './Section';
 import { PercentageChart } from './PercentageChart';

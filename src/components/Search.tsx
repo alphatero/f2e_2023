@@ -10,8 +10,8 @@ export const Search = () => {
       onClick={openDialog}
       className="rounded-full flex items-center flex-col justify-center w-[90px] h-[90px] md:w-[120px] md:h-[120px] text-white fixed right-3 bottom-12 bg-gradient-to-br from-[#22D3EE] to-[#0E7490]"
     >
-      <SearchIcon className="w-10 h-10" />
-      <span className="text-xl">查詢地區</span>
+      <SearchIcon className="md:w-10 md:h-10 w-6 h-6" />
+      <span className="md:text-xl text-sm">查詢地區</span>
     </button>
   );
 };

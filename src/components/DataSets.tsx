@@ -8,9 +8,7 @@ import SecondParty from '@/assets/second_party.svg';
 import ThirdParty from '@/assets/third_party.svg';
 import Image from 'next/image';
 import bn from 'bignumber.js';
-// import { getTotals } from './getData';
 import { Progress } from './Progress';
-import { useTotal } from '@/services/queries/hooks/total';
 import { getTotal } from '@/services/queries/api/total';
 
 type Candidates = {

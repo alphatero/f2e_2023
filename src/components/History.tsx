@@ -1,6 +1,6 @@
 'use client';
 
-import history from './history.json';
+import history from '@/data/history.json';
 
 import { Tabs } from './Tabs';
 import { Section } from './Section';
@@ -11,6 +11,8 @@ import { SubSection } from './SubSection';
 import { PercentageChart } from './PercentageChart';
 import { BarChart } from './BarChart';
 import { useParty } from '@/services/queries/hooks/party';
+import { useState } from 'react';
+import bn from 'bignumber.js';
 
 const tabs = ['得票數', '得票率'];
 
@@ -24,6 +26,7 @@ type Candidate = {
 
 export const History = () => {
   const { data } = useParty();
+  const [selectedYear, setSelectedYear] = useState('2020');
   const { selectedSectionOne, setSelectedSectionOne, open } = useStore();
   if (!data) return null;
   // 找得票數最多的
@@ -37,21 +40,24 @@ export const History = () => {
       title="歷屆得票分析"
       className={cn(open ? 'block' : 'hidden', 'md:block')}
     >
-      <ul className="flex gap-x-11 text-2xl overflow-x-scroll overflow-y-hidden scroll-auto">
-        {data.ticket?.map((item: any) => {
-          return (
-            <li
-              key={item.year}
-              className={cn(
-                'cursor-pointer',
-                selectedSectionOne === item.year && 'text-cyan-700',
-              )}
-              onClick={() => setSelectedSectionOne(item.year)}
-            >
-              {item.year}
-            </li>
-          );
-        })}
+      <ul className="flex border-b border-neutral-100 gap-x-11 text-2xl overflow-x-scroll overflow-y-hidden scroll-auto">
+        {data.ticket
+          .sort((a: any, b: any) => b.year - a.year)
+          ?.map((item: any) => {
+            return (
+              <li
+                key={item.year}
+                className={cn(
+                  'cursor-pointer py-[10px]',
+                  selectedYear === item.year &&
+                    'text-cyan-700 border-b-2 border-cyan-700 font-semibold',
+                )}
+                onClick={() => setSelectedYear(item.year)}
+              >
+                {item.year}
+              </li>
+            );
+          })}
       </ul>
       <SubSection title="選舉概況">
         <div className="flex md:flex-row flex-col gap-y-6 md:gap-y-0 md:gap-x-3 py-6">
@@ -60,7 +66,7 @@ export const History = () => {
               <div
                 key={candidate.id}
                 className={cn(
-                  'flex flex-col rounded-lg bg-amber-100 px-3 pb-3 pt-5 relative',
+                  'flex flex-row justify-between md:justify-center md:flex-col rounded-lg bg-amber-100 px-3 pb-3 pt-5 relative',
                   candidate.id === 1 && 'bg-amber-100',
                   candidate.id === 2 && 'bg-violet-100',
                   candidate.id === 3 && 'bg-cyan-100',
@@ -73,14 +79,26 @@ export const History = () => {
                   </div>
                 )}
 
-                <span className="text-4xl text-slate-700 absolute top-0 left-3 -translate-y-6">
-                  {candidate.id}
-                </span>
-                <span>{candidate.party}</span>
-                <span className="text-xl pt-1">{candidate.name}</span>
-                <span className="pt-4 text-xl">{candidate.validTickets}</span>
-                <span className="pt-1 text-2xl">
-                  {candidate.validPercentage}
+                <div className="flex flex-col gap-y-2">
+                  <span className="text-4xl text-slate-700 absolute top-0 left-3 -translate-y-6">
+                    {candidate.id}
+                  </span>
+                  <span>{candidate.party}</span>
+                  <span className="text-xl pt-1">{candidate.name}</span>
+
+                  <span className="pt-4 text-xl">
+                    {bn(candidate.validTickets).toFixed()} 票
+                  </span>
+                </div>
+                <span
+                  className={cn(
+                    'pt-1 text-4xl md:text-2xl md:justify-start items-center flex justify-center',
+                    candidate.id === 1 && 'text-amber-600',
+                    candidate.id === 2 && 'text-violet-600',
+                    candidate.id === 3 && 'text-cyan-600',
+                  )}
+                >
+                  {candidate.validPercentage} %
                 </span>
               </div>
             );

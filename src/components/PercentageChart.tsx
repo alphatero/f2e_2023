@@ -26,7 +26,7 @@ export const PercentageChart = ({
 
       ctx.save();
       ctx.font = 'bold 16px noto-sans';
-      ctx.fillStyle = '#06B6D4';
+      ctx.fillStyle = '#0E7490';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(
@@ -38,8 +38,8 @@ export const PercentageChart = ({
   };
 
   return (
-    <div className="flex gap-x-12">
-      <div className="text-cyan-700 w-48 h-48">
+    <div className="flex gap-x-4 md:gap-x-12">
+      <div className="text-cyan-700 md:w-48 md:h-48 w-24 h-24">
         <Doughnut
           data={{
             labels: ['有效票', '無效票'],
@@ -58,7 +58,6 @@ export const PercentageChart = ({
             plugins: {
               legend: {
                 display: false,
-                // position: 'bottom',
               },
             },
           }}
@@ -67,17 +66,27 @@ export const PercentageChart = ({
       </div>
       <div className="flex flex-col gap-y-6 text-slate-700 items-center justify-center">
         <div className="flex flex-col gap-y-2 w-full">
-          <span className="text-cyan-700 text-xl font-medium">投票數</span>
-          <span className="text-2xl">{bn(total).toFormat()}</span>
+          <span className="text-cyan-700 text-sm md:text-xl font-medium">
+            投票數
+          </span>
+          <span className="text-base md:text-2xl">{bn(total).toFormat()}</span>
         </div>
-        <div className="flex gap-x-10 flex-wrap">
+        <div className="flex gap-x-6 md:gap-x-10 md:flex-wrap">
           <div className="flex flex-col gap-y-2">
-            <span className="text-cyan-700 text-xl font-medium">有效票數</span>
-            <span className="text-2xl">{bn(validTickets).toFormat()}</span>
+            <span className="text-cyan-700 text-sm md:text-xl font-medium">
+              有效票數
+            </span>
+            <span className="text-base md:text-2xl">
+              {bn(validTickets).toFormat()}
+            </span>
           </div>
           <div className="flex flex-col gap-y-2">
-            <span className="text-cyan-700 text-xl font-medium">無效票數</span>
-            <span className="text-2xl">{bn(invalidTickets).toFormat()}</span>
+            <span className="text-cyan-700 text-sm md:text-xl font-medium">
+              無效票數
+            </span>
+            <span className="text-base md:text-2xl">
+              {bn(invalidTickets).toFormat()}
+            </span>
           </div>
         </div>
       </div>

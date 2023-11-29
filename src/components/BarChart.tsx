@@ -65,7 +65,7 @@ export const BarChart = ({ raw }: Props) => {
   };
 
   return (
-    <div className="flex gap-x-12">
+    <div className="flex gap-x-12 pt-6">
       <div className="text-cyan-700 w-full">
         <Bar data={data} options={options} />
       </div>
