@@ -6,40 +6,19 @@ import * as topojson from 'topojson-client';
 import { useStore } from './stores';
 import { useMap } from './hooks/useMap';
 import { cn } from '@/utils/cn';
+import { useSize } from 'ahooks';
 
 export const TotalMap = () => {
   const { map } = useMap();
   const data = map;
 
-  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 767.98;
-
   const { setCurrentCountry } = useStore();
   const tooltip = useRef(null);
+  const svgRef = useRef(null);
+  const divRef = useRef(null);
+  const size = useSize(divRef);
 
   const [geographies, setGeographies] = useState([]);
-
-  const windowSize = useRef({
-    width: isMobile ? window.innerWidth : 600,
-    height: isMobile ? window.innerHeight : 900,
-  });
-
-  // window is not defined in SSR
-
-  useEffect(() => {
-    if (isMobile) {
-      windowSize.current.width = window.innerWidth;
-      windowSize.current.height = window.innerHeight;
-    }
-
-    const handleResize = () => {
-      windowSize.current.width = window.innerWidth;
-      windowSize.current.height = window.innerHeight;
-    };
-
-    window.addEventListener('resize', handleResize);
-
-    return () => window.removeEventListener('resize', handleResize);
-  }, [isMobile]);
 
   useEffect(() => {
     fetch('/geo.json').then((response) => {
@@ -47,10 +26,10 @@ export const TotalMap = () => {
         return;
       }
 
-      response.json().then((worlddata) => {
+      response.json().then((geodata) => {
         const geo = topojson.feature(
-          worlddata,
-          worlddata?.objects['counties'],
+          geodata,
+          geodata?.objects['counties'],
         ) as any;
         const features =
           geo.type === 'FeatureCollection'
@@ -66,11 +45,9 @@ export const TotalMap = () => {
     });
   }, []);
 
-  let projection = d3.geoMercator().center([121.2, 25]).scale(11000);
-  if (windowSize.current.width < 640) {
-    projection.scale(6000);
-  } else {
-    projection.scale((11000 * windowSize.current.height) / 1100);
+  let projection = d3.geoMercator().center([121.4, 25]).scale(8000);
+  if (size && size?.width < 400) {
+    projection = d3.geoMercator().center([123.4, 23]).scale(5000);
   }
 
   if (!data) {
@@ -117,21 +94,19 @@ export const TotalMap = () => {
   };
 
   return (
-    <div className="w-full overflow-hidden bg-gray-100">
+    <div
+      className="w-full overflow-hidden bg-gray-100 max-h-[80h]"
+      ref={divRef}
+    >
       <div
         className="px-4 py-2 bg-white hidden absolute text-slate-700 z-50 rounded-full"
         ref={tooltip}
       ></div>
       <svg
-        viewBox="0 0 637 900"
-        height={
-          windowSize.current.width < 640 ? 600 : windowSize.current.height - 80
-        }
-        width={
-          windowSize.current.width < 640
-            ? windowSize.current.width
-            : windowSize.current.width / 2.5
-        }
+        // viewBox="0 0 637 900"
+        ref={svgRef}
+        height={Number(size?.width) * 1.2}
+        width={Number(size?.width)}
       >
         <g className="countries">
           {geographies.map((d: any, i) => (

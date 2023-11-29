@@ -2,22 +2,19 @@
 import * as d3 from 'd3';
 
 import { geoPath } from 'd3-geo';
-import { useEffect, useState, useRef, ReactNode } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import * as topojson from 'topojson-client';
 import { useStore } from './stores';
-import { data } from './data';
+import { data } from '@/data/center';
 import { BackIcon } from '@/assets/icons';
+import { useSize } from 'ahooks';
 
 export const TownMap = () => {
   const width = 600;
   const height = 600;
   const tooltip = useRef(null);
-
-  const windowSize = useRef({
-    width: window.innerWidth,
-    height: window.innerHeight,
-  });
-
+  const divRef = useRef(null);
+  const size = useSize(divRef);
   const { setCountry, currentCountry, setCurrentCountry } = useStore();
 
   const [geographies, setGeographies] = useState([]);
@@ -49,12 +46,7 @@ export const TownMap = () => {
           (d: any) => d.properties.COUNTYNAME === currentCountry,
         );
 
-        setGeographies(
-          // features.filter(
-          //   (d: any) => d.properties.COUNTYNAME === currentCountry,
-          // )
-          town,
-        );
+        setGeographies(town);
       });
     });
   }, []);
@@ -81,15 +73,16 @@ export const TownMap = () => {
       d3.select(tooltipDiv).style('display', 'none');
     }
   };
-  // const projection =  d3.geoMercator().center([123, 24]).scale(5500)
+
   const country = data.find((d) => d.country === currentCountry) ?? data[0];
   const projection = d3
     .geoMercator()
     .center(country.center as [number, number])
-    .scale(country.scale);
+    .scale(size && size?.width < 600 ? country.scale * 0.7 : country.scale)
+    .translate([width / 2, height / 4]);
 
   return (
-    <div>
+    <div ref={divRef} className="relative">
       <button
         className="text-cyan-600 bg-white w-10 h-10 flex justify-center items-center rounded-full"
         onClick={() => setCurrentCountry('')}
@@ -100,7 +93,7 @@ export const TownMap = () => {
         className="px-4 py-2 bg-white hidden absolute text-slate-700 z-50 rounded-full"
         ref={tooltip}
       ></div>
-      <svg width={width} height={height}>
+      <svg width={size?.width} height={height}>
         <g className="countries">
           {geographies.map((d: any, i) => (
             <path
