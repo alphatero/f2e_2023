@@ -19,9 +19,11 @@ export const TotalMap = () => {
   const [geographies, setGeographies] = useState([]);
 
   const windowSize = useRef({
-    width: window.innerWidth,
-    height: window.innerHeight,
+    width: isMobile ? window.innerWidth : 600,
+    height: isMobile ? window.innerHeight : 900,
   });
+
+  // window is not defined in SSR
 
   useEffect(() => {
     if (isMobile) {
